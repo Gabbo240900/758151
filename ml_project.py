@@ -7,7 +7,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score,precision_score, recall_score, f1_score
-
 df= pd.read_csv("asteroid_dataset.csv")
 column_headers = list(df.columns.values)
 
@@ -148,15 +147,13 @@ lr_model.fit(X_train, y_train)
 # Make predictions on the test set
 y_pred = lr_model.predict(X_test)
 
-# Logistic Regression Model
+# Evaluate the model using accuracy, precision, recall, and F1 score
 lr_precision = precision_score(y_test, y_pred)
 lr_recall = recall_score(y_test, y_pred)
 lr_f1 = f1_score(y_test, y_pred)
-print(f"Logistic Regression Model:\n Precision: {lr_precision:.2f}\n Recall: {lr_recall:.2f}\n F1 Score: {lr_f1:.2f}\n")
-
-# Evaluate the accuracy of the model
 lr_accuracy = accuracy_score(y_test, y_pred)
-print(f'Accuracy: {lr_accuracy:.2f}')
+
+print(f"Logistic Regression Model:\n Accuracy: {lr_accuracy:.2f}\n Precision: {lr_precision:.2f}\n Recall: {lr_recall:.2f}\n F1 Score: {lr_f1:.2f}\n")
     
     
     
@@ -167,34 +164,30 @@ rf_model.fit(X_train, y_train)
 
 # Make predictions on the test set
 y_pred = rf_model.predict(X_test)
-# Random Forest Classifier Model
+
+# Evaluate the model using accuracy, precision, recall, and F1 score
 rf_precision = precision_score(y_test, y_pred)
 rf_recall = recall_score(y_test, y_pred)
 rf_f1 = f1_score(y_test, y_pred)
-print(f"Random Forest Classifier Model:\n Precision: {rf_precision:.2f}\n Recall: {rf_recall:.2f}\n F1 Score: {rf_f1:.2f}\n")
-# Evaluate the accuracy of the model
 rf_accuracy = accuracy_score(y_test, y_pred)
-print(f'Accuracy: {rf_accuracy:.2f}')
+
+print(f"Random Forest Classifier Model:\n Accuracy: {rf_accuracy:.2f}\n Precision: {rf_precision:.2f}\n Recall: {rf_recall:.2f}\n F1 Score: {rf_f1:.2f}\n")
 
 
-
-# Train the Gradient Boosting model
+#Train the Gradient Boosting model
 gb_model = GradientBoostingClassifier(random_state=42)
 gb_model.fit(X_train, y_train)
 
 # Make predictions on the test set
 y_pred = gb_model.predict(X_test)
 
-# Gradient Boosting Classifier Model
+# Evaluate the model using accuracy, precision, recall, and F1 score
 gb_precision = precision_score(y_test, y_pred)
 gb_recall = recall_score(y_test, y_pred)
 gb_f1 = f1_score(y_test, y_pred)
-print(f"Gradient Boosting Classifier Model:\n Precision: {gb_precision:.2f}\n Recall: {gb_recall:.2f}\n F1 Score: {gb_f1:.2f}\n")
-
-# Evaluate the accuracy of the model
 gb_accuracy = accuracy_score(y_test, y_pred)
-print(f"Accuracy: {gb_accuracy:.2f}")
-    
+
+print(f"Gradient Boosting Classifier Model:\n Accuracy: {gb_accuracy:.2f}\n Precision: {gb_precision:.2f}\n Recall: {gb_recall:.2f}\n F1 Score: {gb_f1:.2f}\n")
 
 
 
