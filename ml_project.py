@@ -122,10 +122,10 @@ else:
 # Get the data types of each column
 dtypes = df2.dtypes
 
-# Identify columns with obj data type
+# Identify columns with obj type
 obj_cols = [col for col, dtype in dtypes.items() if dtype == 'object']
 
-# Remove columns with obj data type
+# Remove columns with obj type
 df3 = df2.drop(obj_cols, axis=1)
 
 
