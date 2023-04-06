@@ -1,14 +1,12 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Apr  6 11:47:54 2023
-
-@author: frank
-"""
-
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+from sklearn.ensemble import RandomForestClassifier
 
 
 df= pd.read_csv("asteroid_dataset.csv")
@@ -89,3 +87,85 @@ gs = fig.add_gridspec(5, 8)
 for idx, col in enumerate(columns):
     i, j = divmod(idx, 8)
     plot_boxplot(col)
+    
+    
+    
+    
+    
+# Check the correlation between size and speed
+sns.scatterplot(x='Relative Velocity km per hr', y='Est Dia in KM(max)', data=df)
+plt.title('Correlation between Size and Speed')
+plt.show()
+###DOBBIAMO VEDERE ALTRE CORRELAZIONI INTERERSSANTI########################    
+
+
+# Count the number of hazardous NEOs
+num_hazardous = df['Hazardous'].sum()
+print(f'Total number of NEOs: {len(df)}')
+print(f'Number of hazardous NEOs: {num_hazardous}')
+print(f"Percentage of hazardous NEOs: {num_hazardous/len(df)*100:.2f}%")
+# Check if the dataset is balanced
+percent_hazardous = num_hazardous / len(df) * 100
+if percent_hazardous < 10:
+    print('The dataset is imbalanced towards non-hazardous NEOs')
+else:
+    print('The dataset is balanced towards hazardous NEOs')
+
+
+
+
+
+
+
+
+
+# Get the data types of each column
+dtypes = df2.dtypes
+
+# Identify columns with obj data type
+obj_cols = [col for col, dtype in dtypes.items() if dtype == 'object']
+
+# Remove columns with obj data type
+df3 = df2.drop(obj_cols, axis=1)
+
+
+# Split the data into training and testing sets
+X = df3.drop('Hazardous', axis=1) # Features
+y = df3['Hazardous'] # Target variable
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Scale the data to improve model performance
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Train a logistic regression model
+lr_model = LogisticRegression(random_state=42)
+lr_model.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = lr_model.predict(X_test)
+
+# Evaluate the accuracy of the model
+lr_accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {lr_accuracy:.2f}')
+    
+    
+    
+
+# Train a random forest classifier
+rf_model = RandomForestClassifier(random_state=42)
+rf_model.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = rf_model.predict(X_test)
+
+# Evaluate the accuracy of the model
+rf_accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {rf_accuracy:.2f}')
+    
+    
+    
+    
+    
+    
