@@ -102,92 +102,173 @@ num_hazardous = df['Hazardous'].sum()
 print(f'Total number of NEOs: {len(df)}')
 print(f'Number of hazardous NEOs: {num_hazardous}')
 print(f"Percentage of hazardous NEOs: {num_hazardous/len(df)*100:.2f}%")
-# Check if the dataset is balanced
-percent_hazardous = num_hazardous / len(df) * 100
-if percent_hazardous < 10:
-    print('The dataset is imbalanced towards non-hazardous NEOs')
-else:
-    print('The dataset is balanced towards hazardous NEOs')
 
 
 
 
+############# undersampling with clustering 
 
 
 
+#check for corerlations
+
+from sklearn.cluster import DBSCAN
+from sklearn.preprocessing import StandardScaler
+
+df_false = df2[df2['Hazardous'] == False]
 
 
-# Get the data types of each column
-dtypes = df2.dtypes
+df_false = df_false.drop (['Neo Reference ID','Name','Perihelion Time','Asc Node Longitude','Epoch Date Close Approach','Epoch Osculation','Close Approach Date','Orbit Determination Date','Orbiting Body','Orbit ID','Equinox','Hazardous'], axis =1)
 
-# Identify columns with obj type
-obj_cols = [col for col, dtype in dtypes.items() if dtype == 'object']
-
-# Remove columns with obj type
-df3 = df2.drop(obj_cols, axis=1)
+df_false['Est Dia in KM'] = (df_false['Est Dia in KM(min)']+df_false['Est Dia in KM(max)'])/2
+df_false.drop('Est Dia in KM(min)', axis=1, inplace=True)
+df_false.drop('Est Dia in KM(max)',axis=1, inplace=True)
 
 
-# Split the data into training and testing sets
-X = df3.drop('Hazardous', axis=1) # Features
-y = df3['Hazardous'] # Target variable
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# Scale the data to improve model performance
+# Preprocess the data by scaling the features
 scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_test = scaler.transform(X_test)
+X_false = scaler.fit_transform(df_false.values)
+
+# Fit the DBSCAN clustering algorithm to the preprocessed data
+dbscan = DBSCAN(eps=1, min_samples=3, algorithm='ball_tree')
+dbscan.fit(X_false)
+
+# Extract the labels of the clusters
+labels = dbscan.labels_
+
+# Count the number of samples in each cluster
+counts = np.bincount(labels[labels != -1])
+
+# Select a subset of samples from each cluster to include in the final under-sampled dataset
+samples_per_cluster = 100
+selected_samples = []
+for i in range(len(counts)):
+    if counts[i] > samples_per_cluster:
+        cluster_samples = df_false[labels == i].sample(samples_per_cluster)
+    else:
+        cluster_samples = df_false[labels == i]
+    selected_samples.append(cluster_samples)
+    
+# Concatenate the selected samples into the final under-sampled dataset
+under_sampled_df = pd.concat(selected_samples)
+under_sampled_df['Hazardous'] = False
+
+df_true = df2[df2['Hazardous'] == True]
+
+df_true = df_true.drop (['Neo Reference ID','Name','Perihelion Time','Asc Node Longitude','Epoch Date Close Approach','Epoch Osculation','Close Approach Date','Orbit Determination Date','Orbiting Body','Orbit ID','Equinox'], axis =1)
+
+df_true['Est Dia in KM'] = (df_true['Est Dia in KM(min)']+df_true['Est Dia in KM(max)'])/2
+df_true.drop('Est Dia in KM(min)', axis=1, inplace=True)
+df_true.drop('Est Dia in KM(max)',axis=1, inplace=True)
+
+
+under_sampled_df=pd.concat([under_sampled_df, df_true], axis=0)
 
 
 
 
-# Train a logistic regression model
-lr_model = LogisticRegression(random_state=42)
-lr_model.fit(X_train, y_train)
 
-# Make predictions on the test set
-y_pred = lr_model.predict(X_test)
 
-# Evaluate the model using accuracy, precision, recall, and F1 score
-lr_precision = precision_score(y_test, y_pred)
-lr_recall = recall_score(y_test, y_pred)
-lr_f1 = f1_score(y_test, y_pred)
-lr_accuracy = accuracy_score(y_test, y_pred)
 
-print(f"Logistic Regression Model:\n Accuracy: {lr_accuracy:.2f}\n Precision: {lr_precision:.2f}\n Recall: {lr_recall:.2f}\n F1 Score: {lr_f1:.2f}\n")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # Get the data types of each column
+# dtypes = df2.dtypes
+
+# # Identify columns with obj type
+# obj_cols = [col for col, dtype in dtypes.items() if dtype == 'object']
+
+# # Remove columns with obj type
+# df3 = df2.drop(obj_cols, axis=1)
+
+
+# # Split the data into training and testing sets
+# X = df3.drop('Hazardous', axis=1) # Features
+# y = df3['Hazardous'] # Target variable
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# # Scale the data to improve model performance
+# scaler = StandardScaler()
+# X_train = scaler.fit_transform(X_train)
+# X_test = scaler.transform(X_test)
+
+
+
+
+# # Train a logistic regression model
+# lr_model = LogisticRegression(random_state=42)
+# lr_model.fit(X_train, y_train)
+
+# # Make predictions on the test set
+# y_pred = lr_model.predict(X_test)
+
+# # Evaluate the model using accuracy, precision, recall, and F1 score
+# lr_precision = precision_score(y_test, y_pred)
+# lr_recall = recall_score(y_test, y_pred)
+# lr_f1 = f1_score(y_test, y_pred)
+# lr_accuracy = accuracy_score(y_test, y_pred)
+
+# print(f"Logistic Regression Model:\n Accuracy: {lr_accuracy:.2f}\n Precision: {lr_precision:.2f}\n Recall: {lr_recall:.2f}\n F1 Score: {lr_f1:.2f}\n")
     
     
     
 
-# Train a random forest classifier
-rf_model = RandomForestClassifier(random_state=42)
-rf_model.fit(X_train, y_train)
+# # Train a random forest classifier
+# rf_model = RandomForestClassifier(random_state=42)
+# rf_model.fit(X_train, y_train)
 
-# Make predictions on the test set
-y_pred = rf_model.predict(X_test)
+# # Make predictions on the test set
+# y_pred = rf_model.predict(X_test)
 
-# Evaluate the model using accuracy, precision, recall, and F1 score
-rf_precision = precision_score(y_test, y_pred)
-rf_recall = recall_score(y_test, y_pred)
-rf_f1 = f1_score(y_test, y_pred)
-rf_accuracy = accuracy_score(y_test, y_pred)
+# # Evaluate the model using accuracy, precision, recall, and F1 score
+# rf_precision = precision_score(y_test, y_pred)
+# rf_recall = recall_score(y_test, y_pred)
+# rf_f1 = f1_score(y_test, y_pred)
+# rf_accuracy = accuracy_score(y_test, y_pred)
 
-print(f"Random Forest Classifier Model:\n Accuracy: {rf_accuracy:.2f}\n Precision: {rf_precision:.2f}\n Recall: {rf_recall:.2f}\n F1 Score: {rf_f1:.2f}\n")
+# print(f"Random Forest Classifier Model:\n Accuracy: {rf_accuracy:.2f}\n Precision: {rf_precision:.2f}\n Recall: {rf_recall:.2f}\n F1 Score: {rf_f1:.2f}\n")
 
 
-#Train the Gradient Boosting model
-gb_model = GradientBoostingClassifier(random_state=42)
-gb_model.fit(X_train, y_train)
+# #Train the Gradient Boosting model
+# gb_model = GradientBoostingClassifier(random_state=42)
+# gb_model.fit(X_train, y_train)
 
-# Make predictions on the test set
-y_pred = gb_model.predict(X_test)
+# # Make predictions on the test set
+# y_pred = gb_model.predict(X_test)
 
-# Evaluate the model using accuracy, precision, recall, and F1 score
-gb_precision = precision_score(y_test, y_pred)
-gb_recall = recall_score(y_test, y_pred)
-gb_f1 = f1_score(y_test, y_pred)
-gb_accuracy = accuracy_score(y_test, y_pred)
+# # Evaluate the model using accuracy, precision, recall, and F1 score
+# gb_precision = precision_score(y_test, y_pred)
+# gb_recall = recall_score(y_test, y_pred)
+# gb_f1 = f1_score(y_test, y_pred)
+# gb_accuracy = accuracy_score(y_test, y_pred)
 
-print(f"Gradient Boosting Classifier Model:\n Accuracy: {gb_accuracy:.2f}\n Precision: {gb_precision:.2f}\n Recall: {gb_recall:.2f}\n F1 Score: {gb_f1:.2f}\n")
+# print(f"Gradient Boosting Classifier Model:\n Accuracy: {gb_accuracy:.2f}\n Precision: {gb_precision:.2f}\n Recall: {gb_recall:.2f}\n F1 Score: {gb_f1:.2f}\n")
 
 
 
