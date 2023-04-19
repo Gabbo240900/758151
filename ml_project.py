@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Apr 19 13:54:32 2023
+
+@author: frank
+"""
+
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -6,8 +13,13 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.cluster import DBSCAN
+from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score,precision_score, recall_score, f1_score
-df= pd.read_csv("asteroid_dataset.csv")
+from sklearn import metrics
+from sklearn.ensemble import RandomForestClassifier
+
+df= pd.read_csv("C:\\Users\\frank\\Downloads\\asteroid_dataset.csv")
 column_headers = list(df.columns.values)
 
 # Dropping the columns withe distances in miles
@@ -85,8 +97,9 @@ gs = fig.add_gridspec(5, 8)
 for idx, col in enumerate(columns):
     i, j = divmod(idx, 8)
     plot_boxplot(col)
+plt.show()
     
-    
+
     
     
     
@@ -94,6 +107,7 @@ for idx, col in enumerate(columns):
 sns.scatterplot(x='Relative Velocity km per hr', y='Est Dia in KM(max)', data=df)
 plt.title('Correlation between Size and Speed')
 plt.show()
+
 ###DOBBIAMO VEDERE ALTRE CORRELAZIONI INTERERSSANTI########################    
 
 
@@ -112,8 +126,6 @@ print(f"Percentage of hazardous NEOs: {num_hazardous/len(df)*100:.2f}%")
 
 #check for corerlations
 
-from sklearn.cluster import DBSCAN
-from sklearn.preprocessing import StandardScaler
 
 df_false = df2[df2['Hazardous'] == False]
 
@@ -165,114 +177,51 @@ df_true.drop('Est Dia in KM(max)',axis=1, inplace=True)
 under_sampled_df=pd.concat([under_sampled_df, df_true], axis=0)
 
 
+#----- Logistic Regression -----
+response1= under_sampled_df.iloc[:,-1]
+df_log_reg = under_sampled_df.iloc[: , :-1]
+
+x_train, x_test, y_train, y_test = train_test_split(df_log_reg, response1, test_size=0.20, random_state=0)
+scaler = StandardScaler()
+scaled_train = scaler.fit_transform(x_train)
+scaled_test = scaler.fit_transform(x_test)
+
+logisticRegr = LogisticRegression(random_state=2409,penalty= 'none')
+logisticRegr.fit(x_train, y_train)
+
+predictions = logisticRegr.predict(x_test)
+score = logisticRegr.score(x_test, y_test)
+print(score)
+
+cm = metrics.confusion_matrix(y_test, predictions)
+print(cm)
+
+precision_score(y_test, predictions)
+
+accuracy_score(y_test, predictions)
+
+recall_score(y_test, predictions)
+
+f1_score(y_test, predictions)
+
+
+
+#----- Random Forest -----
+''' fallo su cord df e prendi la y da df '''
+
+rf = RandomForestClassifier( max_depth=2).fit(x_train, y_train)
+
+rf_pred = rf.predict(x_test)
+
+
+rf_accuracy_train= rf.score(x_train, y_train)
+rf_accuracy = rf.score(x_test, y_test)
+print(rf_accuracy) 
+
+rf_cm = metrics.confusion_matrix(y_test, rf_pred)
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# # Get the data types of each column
-# dtypes = df2.dtypes
-
-# # Identify columns with obj type
-# obj_cols = [col for col, dtype in dtypes.items() if dtype == 'object']
-
-# # Remove columns with obj type
-# df3 = df2.drop(obj_cols, axis=1)
-
-
-# # Split the data into training and testing sets
-# X = df3.drop('Hazardous', axis=1) # Features
-# y = df3['Hazardous'] # Target variable
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# # Scale the data to improve model performance
-# scaler = StandardScaler()
-# X_train = scaler.fit_transform(X_train)
-# X_test = scaler.transform(X_test)
-
-
-
-
-# # Train a logistic regression model
-# lr_model = LogisticRegression(random_state=42)
-# lr_model.fit(X_train, y_train)
-
-# # Make predictions on the test set
-# y_pred = lr_model.predict(X_test)
-
-# # Evaluate the model using accuracy, precision, recall, and F1 score
-# lr_precision = precision_score(y_test, y_pred)
-# lr_recall = recall_score(y_test, y_pred)
-# lr_f1 = f1_score(y_test, y_pred)
-# lr_accuracy = accuracy_score(y_test, y_pred)
-
-# print(f"Logistic Regression Model:\n Accuracy: {lr_accuracy:.2f}\n Precision: {lr_precision:.2f}\n Recall: {lr_recall:.2f}\n F1 Score: {lr_f1:.2f}\n")
-    
-    
-    
-
-# # Train a random forest classifier
-# rf_model = RandomForestClassifier(random_state=42)
-# rf_model.fit(X_train, y_train)
-
-# # Make predictions on the test set
-# y_pred = rf_model.predict(X_test)
-
-# # Evaluate the model using accuracy, precision, recall, and F1 score
-# rf_precision = precision_score(y_test, y_pred)
-# rf_recall = recall_score(y_test, y_pred)
-# rf_f1 = f1_score(y_test, y_pred)
-# rf_accuracy = accuracy_score(y_test, y_pred)
-
-# print(f"Random Forest Classifier Model:\n Accuracy: {rf_accuracy:.2f}\n Precision: {rf_precision:.2f}\n Recall: {rf_recall:.2f}\n F1 Score: {rf_f1:.2f}\n")
-
-
-# #Train the Gradient Boosting model
-# gb_model = GradientBoostingClassifier(random_state=42)
-# gb_model.fit(X_train, y_train)
-
-# # Make predictions on the test set
-# y_pred = gb_model.predict(X_test)
-
-# # Evaluate the model using accuracy, precision, recall, and F1 score
-# gb_precision = precision_score(y_test, y_pred)
-# gb_recall = recall_score(y_test, y_pred)
-# gb_f1 = f1_score(y_test, y_pred)
-# gb_accuracy = accuracy_score(y_test, y_pred)
-
-# print(f"Gradient Boosting Classifier Model:\n Accuracy: {gb_accuracy:.2f}\n Precision: {gb_precision:.2f}\n Recall: {gb_recall:.2f}\n F1 Score: {gb_f1:.2f}\n")
-
-
-
-
-
-    
-    
