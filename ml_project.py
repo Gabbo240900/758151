@@ -4,7 +4,6 @@ Created on Wed Apr 19 13:54:32 2023
 
 @author: frank
 """
-
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -19,8 +18,10 @@ from sklearn.metrics import accuracy_score,precision_score, recall_score, f1_sco
 from sklearn import metrics
 from sklearn.ensemble import RandomForestClassifier
 
+
 df= pd.read_csv("C:\\Users\\frank\\Downloads\\asteroid_dataset.csv")
 column_headers = list(df.columns.values)
+target= df.iloc[:,-1]
 
 # Dropping the columns withe distances in miles
 df1=df.drop(['Est Dia in Miles(min)', 'Est Dia in Miles(max)','Est Dia in M(min)','Est Dia in M(max)','Est Dia in Feet(min)','Est Dia in Feet(max)','Relative Velocity km per hr','Miles per hour','Miss Dist.(miles)'], axis=1)                                       
@@ -68,6 +69,7 @@ plt.show()
 ''' Analyzing the distributions '''
 # Derving distribution info
 tt=cor_df.describe()
+print(tt)
 
 # Histogram
 fig, ax = plt.subplots(figsize=(15, 15))
@@ -104,11 +106,60 @@ plt.show()
     
     
 # Check the correlation between size and speed
-sns.scatterplot(x='Relative Velocity km per hr', y='Est Dia in KM(max)', data=df)
+vd_corr= cor_df['Relative Velocity km per sec'].corr(cor_df['Est Dia in KM(max)'])
+sns.scatterplot(x='Relative Velocity km per sec', y='Est Dia in KM(max)', data=cor_df)
 plt.title('Correlation between Size and Speed')
 plt.show()
+print(f'The correlation between Relative Velocity km per sec and Est Dia in KM(max) is {vd_corr}')
 
-###DOBBIAMO VEDERE ALTRE CORRELAZIONI INTERERSSANTI########################    
+me_corr= cor_df['Miss Dist. moon (au)'].corr(cor_df['Miss Dist. earth (au)'])
+sns.scatterplot(x='Miss Dist. moon (au)', y='Miss Dist. earth (au)', data=cor_df)
+plt.title('Correlation between Miss Dist. moon (au) and Miss Dist. earth (au)')
+plt.show()
+print(f'The correlation between Miss Dist. moon (au) and Miss Dist. earth (au) {me_corr}')
+
+mm_corr= cor_df['Miss Dist. moon (au)'].corr(cor_df['Miss Dist.(Astronomical)'])
+sns.scatterplot(x='Miss Dist. moon (au)', y='Miss Dist.(Astronomical)', data=cor_df)
+plt.title('Correlation between Miss Dist. moon (au) and Miss Dist.(Astronomical)')
+plt.show()
+print(f'The correlation between Miss Dist. moon (au) km per sec and Miss Dist.(Astronomical) is {mm_corr}')
+#thus we will us only Miss Dist.(Astronomical)
+
+md_corr= cor_df['Est Dia in KM(max)'].corr(cor_df['Absolute Magnitude'])
+sns.scatterplot(x='Est Dia in KM(max)', y='Absolute Magnitude', data=cor_df)
+plt.title('Correlation between Est Dia in KM(max) and Absolute Magnitude')
+plt.show()
+print(f'The correlation between Est Dia in KM(max)and Absolute Magnitude {md_corr}')
+# seems like the less size the more brightness STRANO
+
+eu_corr= cor_df['Eccentricity'].corr(cor_df['Orbit Uncertainity'])
+sns.scatterplot(x='Eccentricity', y='Orbit Uncertainity', data=cor_df)
+plt.title('Correlation between Eccentricity and Orbit Uncertainity')
+plt.show()
+print(f'The correlation between Eccentricity and Orbit Uncertainityis {eu_corr}')
+# no correlation
+
+vm_corr= cor_df['Relative Velocity km per sec'].corr(cor_df['Mean Motion'])
+sns.scatterplot(x='Relative Velocity km per sec', y='Mean Motion', data=cor_df)
+plt.title('Correlation between Size and Mean Motion')
+plt.show()
+print(f'The correlation between Relative Velocity km per sec and Mean Motionis {vm_corr}')
+#no corr
+
+iu_corr= cor_df['Inclination'].corr(cor_df['Orbit Uncertainity'])
+sns.scatterplot(x='Inclination', y='Orbit Uncertainity', data=cor_df)
+plt.title('Correlation between Inclination and Orbit Uncertainity')
+plt.show()
+print(f'The correlation between Inclination and Orbit Uncertainityis {iu_corr}')
+# no correlation
+
+am_corr= cor_df['Mean Anomaly'].corr(cor_df['Mean Motion'])
+sns.scatterplot(x='Mean Anomaly', y='Mean Motion', data=cor_df)
+plt.title('Correlation between Mean Anomaly and Mean Motion')
+plt.show()
+print(f'The correlation between Mean Anomaly and Mean Motionis {am_corr}')
+#no corr
+
 
 
 # Count the number of hazardous NEOs
@@ -194,7 +245,13 @@ score = logisticRegr.score(x_test, y_test)
 print(score)
 
 cm = metrics.confusion_matrix(y_test, predictions)
-print(cm)
+# Build the plot
+plt.figure(figsize=(4,4))
+sns.heatmap(cm, annot=True, annot_kws={'size':15},
+            cmap=plt.cm.Oranges)
+plt.title('Confusion Matrix for Logistic regression')
+plt.show()
+
 
 precision_score(y_test, predictions)
 
@@ -204,24 +261,51 @@ recall_score(y_test, predictions)
 
 f1_score(y_test, predictions)
 
+print(logisticRegr.coef_, logisticRegr.intercept_)
+
+odds_ratios = np.exp(logisticRegr.coef_)
+
+# Print the odds ratios
+print("Odds Ratios: ", odds_ratios)
+#the most significant feature is the 6
+
+y_pred_proba = logisticRegr.predict_proba(x_test)[::,1]
+fpr, tpr, _ = metrics.roc_curve(y_test,  y_pred_proba)
+auc = metrics.roc_auc_score(y_test, y_pred_proba)
+
+#create ROC curve
+plt.plot(fpr,tpr,label="AUC="+str(auc))
+plt.ylabel('True Positive Rate')
+plt.xlabel('False Positive Rate')
+plt.legend(loc=4)
+plt.show()
+
 
 
 #----- Random Forest -----
-''' fallo su cord df e prendi la y da df '''
-
-rf = RandomForestClassifier( max_depth=2).fit(x_train, y_train)
-
-rf_pred = rf.predict(x_test)
 
 
-rf_accuracy_train= rf.score(x_train, y_train)
-rf_accuracy = rf.score(x_test, y_test)
+
+x_train_rf, x_test_rf, y_train_rf, y_test_rf = train_test_split(cor_df, target, test_size=0.20, random_state=0)
+
+rf = RandomForestClassifier( max_depth=5).fit(x_train_rf, y_train_rf)
+
+rf_pred = rf.predict(x_test_rf)
+
+
+rf_accuracy_train= rf.score(x_train_rf, y_train_rf)
+rf_accuracy = rf.score(x_test_rf, y_test_rf)
 print(rf_accuracy) 
 
-rf_cm = metrics.confusion_matrix(y_test, rf_pred)
+rf_cm = metrics.confusion_matrix(y_test_rf, rf_pred)
+
+# Build the plot
+plt.figure(figsize=(4,4))
+sns.heatmap(rf_cm, annot=True, annot_kws={'size':15},
+            cmap=plt.cm.Greens)
 
 
-
-
+plt.title('Confusion Matrix for Random Forest Model')
+plt.show()
 
 
