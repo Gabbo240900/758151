@@ -4,6 +4,8 @@ Created on Wed Apr 19 13:54:32 2023
 
 @author: frank
 """
+
+from sklearn.inspection import permutation_importance
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
@@ -316,7 +318,7 @@ plt.show()
 
 x_train_rf, x_test_rf, y_train_rf, y_test_rf = train_test_split(cor_df, target, test_size=0.20, random_state=0)
 
-rf = RandomForestClassifier(n_estimators=20, max_depth=5).fit(x_train_rf, y_train_rf)
+rf = RandomForestClassifier(n_estimators=40, max_depth=7,max_features=3,min_samples_leaf=1, min_samples_split=2).fit(x_train_rf, y_train_rf)
 
 rf_pred = rf.predict(x_test_rf)
 
@@ -353,7 +355,7 @@ auc_rf = metrics.roc_auc_score(y_test_rf, y_pred_proba_rf)
 fpr_rf, tpr_rf, _ = metrics.roc_curve(y_test_rf, y_pred_proba_rf)
 
 # plot the ROC curve
-plt.plot(fpr_rf, tpr_rf, label='ROC curve (AUC = {:.2f})'.format(auc))
+plt.plot(fpr_rf, tpr_rf, label='ROC curve (AUC = {:.2f})'.format(auc_rf))
 plt.plot([0, 1], [0, 1], 'k--', label='Random guess')
 plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
@@ -362,22 +364,53 @@ plt.legend(loc='lower right')
 plt.show()
 
 
+from sklearn.model_selection import GridSearchCV
+# Create the parameter grid based on the results of random search 
+param_grid = {
+    'bootstrap': [True],
+    'max_depth': [2, 3, 4, 5, 6, 7, 8, 9],
+    'max_features': [2, 3],
+    'min_samples_leaf': [1, 2, 3, 4, 5],
+    'min_samples_split': [2, 3, 4 ,5 ,6, 7, 8, 10, 12],
+    'n_estimators': [10, 20, 30, 40, 50]
+}
 
 
-from sklearn.inspection import permutation_importance
 
-feature_names = rf[:-1]
-pd.Series(feature_names)
-mdi_importances = pd.Series(
-    rf[-1].feature_importances_, index=feature_names
-).sort_values(ascending=True)
-plt.figure(figsize=(20,10))             
-ax = mdi_importances.plot.barh()
-ax.set_title("Random Forest Feature Importances (MDI)")
-ax.figure.tight_layout()            
-   
+# Instantiate the grid search model
+grid_search = GridSearchCV(estimator = rf, param_grid = param_grid, 
+                          cv = 3, n_jobs = -1, verbose = 2)
+
+grid_search.fit(x_train_rf, y_train_rf)
+print(grid_search.best_params_)
+
+
+  
 for t in rf.estimators_[:9]:
     fig, ax = plt.subplots(figsize=(10, 10),dpi=300)
     plot_tree(t, filled=True, ax=ax)
 plt.show()
         
+def evaluate(model, test_features, test_labels):
+    predictions = model.predict(test_features)
+    errors = abs(predictions - test_labels)
+    mape = 100 * np.mean(errors / test_labels)
+    accuracy = 100 - mape
+    print('Model Performance')
+    print('Average Error: {:0.4f} degrees.'.format(np.mean(errors)))
+    print('Accuracy = {:0.2f}%.'.format(accuracy))
+    
+    return accuracy
+
+
+imp= permutation_importance(rf, x_test_rf, y_test_rf)
+feature_names = [cor_df.columns.values]
+forest_importances = pd.Series(imp.importances_mean, index=feature_names)
+fig, ax = plt.subplots()
+forest_importances.plot.bar(yerr=imp.importances_std, ax=ax)
+ax.set_title("Feature importances using permutation on full model")
+ax.set_ylabel("Mean accuracy decrease")
+fig.tight_layout()
+plt.show()
+
+
