@@ -4,7 +4,12 @@ Created on Wed Apr 19 13:54:32 2023
 
 @author: frank
 """
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
 import pandas as pd
+from sklearn.metrics import r2_score
+from sklearn.metrics import classification_report
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
@@ -16,8 +21,13 @@ from sklearn.cluster import DBSCAN
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score,precision_score, recall_score, f1_score
 from sklearn import metrics
-from sklearn.ensemble import RandomForestClassifier
-
+from sklearn.preprocessing import LabelEncoder
+from sklearn.tree import export_graphviz
+from IPython.display import Image
+from sklearn import tree
+from IPython import display
+import graphviz
+from sklearn.tree import plot_tree
 
 df= pd.read_csv("C:\\Users\\frank\\Downloads\\asteroid_dataset.csv")
 column_headers = list(df.columns.values)
@@ -28,6 +38,13 @@ df1=df.drop(['Est Dia in Miles(min)', 'Est Dia in Miles(max)','Est Dia in M(min)
 
 # Checking for NAs
 df.isnull().sum().sum()
+
+ob=list(df['Orbiting Body'])
+b=0
+for o in ob:
+    if o =='Earth':
+        b+=1
+# Orbiting body is the same far all the observations
 
 # Checking for duplicates 
 a=list(df.duplicated(keep=False))
@@ -164,6 +181,9 @@ print(f'The correlation between Mean Anomaly and Mean Motionis {am_corr}')
 
 # Count the number of hazardous NEOs
 num_hazardous = df['Hazardous'].sum()
+num_hazardouss = df['Hazardous'].reset_index()
+sns.countplot(data=num_hazardouss,x='Hazardous')
+plt.show()
 print(f'Total number of NEOs: {len(df)}')
 print(f'Number of hazardous NEOs: {num_hazardous}')
 print(f"Percentage of hazardous NEOs: {num_hazardous/len(df)*100:.2f}%")
@@ -229,6 +249,7 @@ under_sampled_df=pd.concat([under_sampled_df, df_true], axis=0)
 
 
 #----- Logistic Regression -----
+
 response1= under_sampled_df.iloc[:,-1]
 df_log_reg = under_sampled_df.iloc[: , :-1]
 
@@ -244,22 +265,29 @@ predictions = logisticRegr.predict(x_test)
 score = logisticRegr.score(x_test, y_test)
 print(score)
 
+
 cm = metrics.confusion_matrix(y_test, predictions)
 # Build the plot
 plt.figure(figsize=(4,4))
 sns.heatmap(cm, annot=True, annot_kws={'size':15},
             cmap=plt.cm.Oranges)
 plt.title('Confusion Matrix for Logistic regression')
+plt.xlabel('Predictions', fontsize=10)
+plt.ylabel('Actuals', fontsize=10)
 plt.show()
 
 
-precision_score(y_test, predictions)
+precision_lr =precision_score(y_test, predictions)
+print('Logistic regression precision:', precision_lr)
 
-accuracy_score(y_test, predictions)
+accuracy_lr=accuracy_score(y_test, predictions)
+print('Logistic regression accuracy:', accuracy_lr)
 
-recall_score(y_test, predictions)
+recall_lr=recall_score(y_test, predictions)
+print('Logistic regression recall:', recall_lr)
 
-f1_score(y_test, predictions)
+fi_lr=f1_score(y_test, predictions)
+print('Logistic regression F-1 score:', fi_lr)
 
 print(logisticRegr.coef_, logisticRegr.intercept_)
 
@@ -276,6 +304,7 @@ auc = metrics.roc_auc_score(y_test, y_pred_proba)
 #create ROC curve
 plt.plot(fpr,tpr,label="AUC="+str(auc))
 plt.ylabel('True Positive Rate')
+plt.plot([0, 1], [0, 1], 'k--', label='Random guess')
 plt.xlabel('False Positive Rate')
 plt.legend(loc=4)
 plt.show()
@@ -285,17 +314,16 @@ plt.show()
 #----- Random Forest -----
 
 
-
 x_train_rf, x_test_rf, y_train_rf, y_test_rf = train_test_split(cor_df, target, test_size=0.20, random_state=0)
 
-rf = RandomForestClassifier( max_depth=5).fit(x_train_rf, y_train_rf)
+rf = RandomForestClassifier(n_estimators=20, max_depth=5).fit(x_train_rf, y_train_rf)
 
 rf_pred = rf.predict(x_test_rf)
 
 
 rf_accuracy_train= rf.score(x_train_rf, y_train_rf)
 rf_accuracy = rf.score(x_test_rf, y_test_rf)
-print(rf_accuracy) 
+print('Random forest accuracy:', rf_accuracy)
 
 rf_cm = metrics.confusion_matrix(y_test_rf, rf_pred)
 
@@ -308,4 +336,48 @@ sns.heatmap(rf_cm, annot=True, annot_kws={'size':15},
 plt.title('Confusion Matrix for Random Forest Model')
 plt.show()
 
+precision_rf= precision_score(y_test_rf, rf_pred)
+print('Random forest precision:', precision_rf)
 
+recall_rf = recall_score(y_test_rf, rf_pred)
+print('Random forest recall:', recall_rf)
+
+f1_rf= f1_score(y_test_rf, rf_pred)
+print('Random forest F-1 score:', f1_rf)
+
+
+y_pred_proba_rf = rf.predict_proba(x_test_rf)[:, 1]
+auc_rf = metrics.roc_auc_score(y_test_rf, y_pred_proba_rf)
+
+# calculate ROC curve of the model
+fpr_rf, tpr_rf, _ = metrics.roc_curve(y_test_rf, y_pred_proba_rf)
+
+# plot the ROC curve
+plt.plot(fpr_rf, tpr_rf, label='ROC curve (AUC = {:.2f})'.format(auc))
+plt.plot([0, 1], [0, 1], 'k--', label='Random guess')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC Curve')
+plt.legend(loc='lower right')
+plt.show()
+
+
+
+
+from sklearn.inspection import permutation_importance
+
+feature_names = rf[:-1]
+pd.Series(feature_names)
+mdi_importances = pd.Series(
+    rf[-1].feature_importances_, index=feature_names
+).sort_values(ascending=True)
+plt.figure(figsize=(20,10))             
+ax = mdi_importances.plot.barh()
+ax.set_title("Random Forest Feature Importances (MDI)")
+ax.figure.tight_layout()            
+   
+for t in rf.estimators_[:9]:
+    fig, ax = plt.subplots(figsize=(10, 10),dpi=300)
+    plot_tree(t, filled=True, ax=ax)
+plt.show()
+        
