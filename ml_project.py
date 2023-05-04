@@ -6,9 +6,9 @@ Created on Wed Apr 19 13:54:32 2023
 """
 
 from sklearn.inspection import permutation_importance
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
+# import tensorflow as tf
+# from tensorflow import keras
+# from tensorflow.keras import layers
 import pandas as pd
 from sklearn.metrics import r2_score
 from sklearn.metrics import classification_report
@@ -31,7 +31,7 @@ from IPython import display
 import graphviz
 from sklearn.tree import plot_tree
 
-df= pd.read_csv("C:\\Users\\frank\\Downloads\\asteroid_dataset.csv")
+df= pd.read_csv("asteroid_dataset.csv")
 column_headers = list(df.columns.values)
 target= df.iloc[:,-1]
 
@@ -255,10 +255,26 @@ under_sampled_df=pd.concat([under_sampled_df, df_true], axis=0)
 response1= under_sampled_df.iloc[:,-1]
 df_log_reg = under_sampled_df.iloc[: , :-1]
 
+
+
 x_train, x_test, y_train, y_test = train_test_split(df_log_reg, response1, test_size=0.20, random_state=0)
+x_train_tot, x_test_tot, y_train_tot, y_test_tot = train_test_split(cor_df, target, test_size=0.20, random_state=0)
+
+
+# get the indices of the rows in df1 that also appear in df2
+overlap_indices = x_test_tot.index.intersection(x_train.index)
+
+# drop the overlapping rows from df1
+x_test_tot = x_test_tot.drop(overlap_indices)
+
+
+
 scaler = StandardScaler()
 scaled_train = scaler.fit_transform(x_train)
 scaled_test = scaler.fit_transform(x_test)
+
+
+
 
 logisticRegr = LogisticRegression(random_state=2409,penalty= 'none')
 logisticRegr.fit(x_train, y_train)
