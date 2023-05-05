@@ -5,10 +5,11 @@ Created on Wed Apr 19 13:54:32 2023
 @author: frank
 """
 
+from imblearn.metrics import specificity_score
 from sklearn.inspection import permutation_importance
-# import tensorflow as tf
-# from tensorflow import keras
-# from tensorflow.keras import layers
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
 import pandas as pd
 from sklearn.metrics import r2_score
 from sklearn.metrics import classification_report
@@ -31,7 +32,7 @@ from IPython import display
 import graphviz
 from sklearn.tree import plot_tree
 
-df= pd.read_csv("asteroid_dataset.csv")
+df= pd.read_csv("C:\\Users\\frank\\Downloads\\asteroid_dataset.csv")
 column_headers = list(df.columns.values)
 target= df.iloc[:,-1]
 
@@ -80,7 +81,12 @@ df2['Miss Dist. earth (au)']= miss_dist_from_earth_au
 cor_df = df2.drop (['Neo Reference ID','Name','Perihelion Time','Asc Node Longitude','Epoch Date Close Approach','Epoch Osculation','Close Approach Date','Orbit Determination Date','Orbiting Body','Orbit ID','Equinox','Hazardous'], axis =1)
 column_headers2 = list(cor_df.columns.values)
 cor = cor_df.corr()
-sns.heatmap(cor,cmap='coolwarm', center=0)
+fig_h = plt.figure(figsize=(17, 17))
+ax_h = fig_h.add_subplot(1, 1, 1)
+sns.heatmap(cor,cmap='coolwarm', center=0, annot= True, annot_kws={'size':11})
+ax_h.set_title('Correlation matrix')
+plt.xticks(fontsize=13)
+plt.yticks(fontsize=13)
 plt.show()
 
 ##### SARà GIUSTO ? TRARRE CONCLUSIONI
@@ -112,7 +118,7 @@ def plot_boxplot(column):
     sns.boxplot(x=cor_df[column], ax=fig_ax)
     fig_ax.set_title(column)
 
-fig = plt.figure(figsize=(15, 15), constrained_layout=True)
+fig = plt.figure(figsize=(20, 20), constrained_layout=True)
 gs = fig.add_gridspec(5, 8)
 
 for idx, col in enumerate(columns):
@@ -135,7 +141,7 @@ me_corr= cor_df['Miss Dist. moon (au)'].corr(cor_df['Miss Dist. earth (au)'])
 sns.scatterplot(x='Miss Dist. moon (au)', y='Miss Dist. earth (au)', data=cor_df)
 plt.title('Correlation between Miss Dist. moon (au) and Miss Dist. earth (au)')
 plt.show()
-print(f'The correlation between Miss Dist. moon (au) and Miss Dist. earth (au) {me_corr}')
+print(f'The correlation between Miss Dist. moon (au) and Miss Dist. earth (au) is {me_corr}')
 
 mm_corr= cor_df['Miss Dist. moon (au)'].corr(cor_df['Miss Dist.(Astronomical)'])
 sns.scatterplot(x='Miss Dist. moon (au)', y='Miss Dist.(Astronomical)', data=cor_df)
@@ -148,28 +154,28 @@ md_corr= cor_df['Est Dia in KM(max)'].corr(cor_df['Absolute Magnitude'])
 sns.scatterplot(x='Est Dia in KM(max)', y='Absolute Magnitude', data=cor_df)
 plt.title('Correlation between Est Dia in KM(max) and Absolute Magnitude')
 plt.show()
-print(f'The correlation between Est Dia in KM(max)and Absolute Magnitude {md_corr}')
+print(f'The correlation between Est Dia in KM(max)and Absolute Magnitude is {md_corr}')
 # seems like the less size the more brightness STRANO
 
 eu_corr= cor_df['Eccentricity'].corr(cor_df['Orbit Uncertainity'])
 sns.scatterplot(x='Eccentricity', y='Orbit Uncertainity', data=cor_df)
 plt.title('Correlation between Eccentricity and Orbit Uncertainity')
 plt.show()
-print(f'The correlation between Eccentricity and Orbit Uncertainityis {eu_corr}')
+print(f'The correlation between Eccentricity and Orbit Uncertainity is {eu_corr}')
 # no correlation
 
 vm_corr= cor_df['Relative Velocity km per sec'].corr(cor_df['Mean Motion'])
 sns.scatterplot(x='Relative Velocity km per sec', y='Mean Motion', data=cor_df)
 plt.title('Correlation between Size and Mean Motion')
 plt.show()
-print(f'The correlation between Relative Velocity km per sec and Mean Motionis {vm_corr}')
+print(f'The correlation between Relative Velocity km per sec and Mean Motion is {vm_corr}')
 #no corr
 
 iu_corr= cor_df['Inclination'].corr(cor_df['Orbit Uncertainity'])
 sns.scatterplot(x='Inclination', y='Orbit Uncertainity', data=cor_df)
 plt.title('Correlation between Inclination and Orbit Uncertainity')
 plt.show()
-print(f'The correlation between Inclination and Orbit Uncertainityis {iu_corr}')
+print(f'The correlation between Inclination and Orbit Uncertainity is {iu_corr}')
 # no correlation
 
 am_corr= cor_df['Mean Anomaly'].corr(cor_df['Mean Motion'])
@@ -180,7 +186,13 @@ print(f'The correlation between Mean Anomaly and Mean Motionis {am_corr}')
 #no corr
 
 
+ju_corr= cor_df['Jupiter Tisserand Invariant'].corr(cor_df['Orbital Period'])
+sns.scatterplot(x='Jupiter Tisserand Invariant', y='Orbital Period', data=cor_df)
+plt.title('Correlation between Jupiter Tisserand Invariant and Orbital Period')
+plt.show()
+print(f'The correlation between Jupiter Tisserand Invariant and Orbital Periodis {ju_corr}')
 
+.
 # Count the number of hazardous NEOs
 num_hazardous = df['Hazardous'].sum()
 num_hazardouss = df['Hazardous'].reset_index()
@@ -250,74 +262,138 @@ df_true.drop('Est Dia in KM(max)',axis=1, inplace=True)
 under_sampled_df=pd.concat([under_sampled_df, df_true], axis=0)
 
 
+num_hazardous_under = under_sampled_df['Hazardous'].sum()
+num_hazardouss_under = under_sampled_df['Hazardous'].reset_index()
+sns.countplot(data=num_hazardouss_under,x='Hazardous')
+plt.show()
+print(f'Total number of NEOs: {len(df)}')
+print(f'Number of hazardous NEOs: {num_hazardous_under}')
+print(f"Percentage of hazardous NEOs: {num_hazardous_under/len(under_sampled_df)*100:.2f}%")
+
+
+
 #----- Logistic Regression -----
 
 response1= under_sampled_df.iloc[:,-1]
 df_log_reg = under_sampled_df.iloc[: , :-1]
 
+lr_df1=cor_df
+lr_df1['Est Dia in KM'] = (cor_df['Est Dia in KM(min)']+cor_df['Est Dia in KM(max)'])/2
+lr_df1.drop('Est Dia in KM(min)', axis=1, inplace=True)
+lr_df1.drop('Est Dia in KM(max)',axis=1, inplace=True)
 
 
+x_train_tot, x_test_tot, y_train_tot, y_test_tot = train_test_split(lr_df1, target, test_size=0.20, random_state=0)
 x_train, x_test, y_train, y_test = train_test_split(df_log_reg, response1, test_size=0.20, random_state=0)
-x_train_tot, x_test_tot, y_train_tot, y_test_tot = train_test_split(cor_df, target, test_size=0.20, random_state=0)
+scaler = StandardScaler()
 
-
-# get the indices of the rows in df1 that also appear in df2
+# get the indices of the rows in lr_df1 that also appear in df_log_reg
 overlap_indices = x_test_tot.index.intersection(x_train.index)
 
-# drop the overlapping rows from df1
+# drop the overlapping rows from lr_df1
 x_test_tot = x_test_tot.drop(overlap_indices)
+y_test_tot= y_test_tot.drop(overlap_indices)
 
 
-
-scaler = StandardScaler()
 scaled_train = scaler.fit_transform(x_train)
-scaled_test = scaler.fit_transform(x_test)
-
-
-
+scaled_test = scaler.transform(x_test_tot)
+scaled_test_bal =scaler.transform(x_test)
 
 logisticRegr = LogisticRegression(random_state=2409,penalty= 'none')
-logisticRegr.fit(x_train, y_train)
+logisticRegr.fit(scaled_train, y_train)
 
-predictions = logisticRegr.predict(x_test)
-score = logisticRegr.score(x_test, y_test)
-print(score)
+predictions = logisticRegr.predict(scaled_test)
+score = logisticRegr.score(scaled_test, y_test_tot)
+print(f'Score for unbalanced dataset{score}')
+
+predictions_bal=logisticRegr.predict(scaled_test_bal)
+score_bal= logisticRegr.score(scaled_test_bal, y_test)
+print(f'Score for balanced dataset{score_bal}')
 
 
-cm = metrics.confusion_matrix(y_test, predictions)
+cm = metrics.confusion_matrix(y_test_tot, predictions)
 # Build the plot
 plt.figure(figsize=(4,4))
 sns.heatmap(cm, annot=True, annot_kws={'size':15},
             cmap=plt.cm.Oranges)
-plt.title('Confusion Matrix for Logistic regression')
+plt.title('Confusion Matrix for Logistic regression (unbalanced)')
 plt.xlabel('Predictions', fontsize=10)
 plt.ylabel('Actuals', fontsize=10)
 plt.show()
 
 
-precision_lr =precision_score(y_test, predictions)
-print('Logistic regression precision:', precision_lr)
+cm_bal = metrics.confusion_matrix(y_test, predictions_bal)
+# Build the plot
+plt.figure(figsize=(4,4))
+sns.heatmap(cm_bal, annot=True, annot_kws={'size':15},
+            cmap=plt.cm.Oranges)
+plt.title('Confusion Matrix for Logistic regression (balanced)')
+plt.xlabel('Predictions', fontsize=10)
+plt.ylabel('Actuals', fontsize=10)
+plt.show()
 
-accuracy_lr=accuracy_score(y_test, predictions)
-print('Logistic regression accuracy:', accuracy_lr)
 
-recall_lr=recall_score(y_test, predictions)
-print('Logistic regression recall:', recall_lr)
 
-fi_lr=f1_score(y_test, predictions)
-print('Logistic regression F-1 score:', fi_lr)
 
-print(logisticRegr.coef_, logisticRegr.intercept_)
+precision_lr =precision_score(y_test_tot, predictions)
+print('Logistic regression precision (unbalanced):', precision_lr)
 
-odds_ratios = np.exp(logisticRegr.coef_)
+specificity_lr= specificity_score(y_test_tot, predictions)
+print('Logistic regression specificity (unbalanced):', specificity_lr)
 
-# Print the odds ratios
-print("Odds Ratios: ", odds_ratios)
-#the most significant feature is the 6
+accuracy_lr=accuracy_score(y_test_tot, predictions)
+print('Logistic regression accuracy (unbalanced):', accuracy_lr)
 
-y_pred_proba = logisticRegr.predict_proba(x_test)[::,1]
-fpr, tpr, _ = metrics.roc_curve(y_test,  y_pred_proba)
-auc = metrics.roc_auc_score(y_test, y_pred_proba)
+recall_lr=recall_score(y_test_tot, predictions)
+print('Logistic regression recall (unbalanced):', recall_lr)
+
+fi_lr=f1_score(y_test_tot, predictions)
+print('Logistic regression F-1 score (unbalanced):', fi_lr)
+
+
+
+
+precision_lr_bal =precision_score(y_test, predictions_bal)
+print('Logistic regression precision (balanced):', precision_lr_bal)
+
+specificity_lr_bal= specificity_score(y_test, predictions_bal)
+print('Logistic regression specificity (balanced):', specificity_lr_bal)
+
+accuracy_lr_bal=accuracy_score(y_test, predictions_bal)
+print('Logistic regression accuracy (balanced):', accuracy_lr_bal)
+
+recall_lr_bal=recall_score(y_test, predictions_bal)
+print('Logistic regression recall (balanced):', recall_lr_bal)
+
+fi_lr_bal=f1_score(y_test, predictions_bal)
+print('Logistic regression F-1 score (balanced):', fi_lr_bal)
+
+
+
+
+
+
+
+# print(logisticRegr.coef_, logisticRegr.intercept_)
+
+# odds_ratios = logisticRegr.coef_
+# odds=pd.DataFrame(odds_ratios)
+# odds_transposed=odds.T
+# odds_transposed.iloc
+# plt.bar(odds_transposed.index.values, odds_transposed)
+
+# # Show the plot
+# plt.show()
+
+# # Print the odds ratios
+# print("Odds Ratios: ", odds_ratios)
+# #the most significant feature is the 6
+
+
+
+y_pred_proba = logisticRegr.predict_proba(scaled_test)[::,1]
+fpr, tpr, _ = metrics.roc_curve(y_test_tot,  y_pred_proba)
+auc = metrics.roc_auc_score(y_test_tot, y_pred_proba)
 
 #create ROC curve
 plt.plot(fpr,tpr,label="AUC="+str(auc))
@@ -325,7 +401,49 @@ plt.ylabel('True Positive Rate')
 plt.plot([0, 1], [0, 1], 'k--', label='Random guess')
 plt.xlabel('False Positive Rate')
 plt.legend(loc=4)
+plt.title('ROC curve for Logistic regression (unbalanced)')
 plt.show()
+
+
+
+
+y_pred_proba_bal = logisticRegr.predict_proba(scaled_test_bal)[::,1]
+fpr_bal, tpr_bal, _= metrics.roc_curve(y_test,  y_pred_proba_bal)
+auc_bal = metrics.roc_auc_score(y_test, y_pred_proba_bal)
+
+#create ROC curve
+plt.plot(fpr_bal,tpr_bal,label="AUC="+str(auc_bal))
+plt.ylabel('True Positive Rate')
+plt.plot([0, 1], [0, 1], 'k--', label='Random guess')
+plt.xlabel('False Positive Rate')
+plt.legend(loc=4)
+plt.title('ROC curve for Logistic regression (balanced)')
+plt.show()
+
+
+import statsmodels.api as sm
+
+response1= under_sampled_df.iloc[:,-1]
+df_log_reg = under_sampled_df.iloc[: , :-1]
+
+x_train_tot, x_test_tot, y_train_tot, y_test_tot = train_test_split(cor_df, target, test_size=0.20, random_state=0)
+x_train, x_test, y_train, y_test = train_test_split(df_log_reg, response1, test_size=0.20, random_state=0)
+scaler = StandardScaler()
+scaled_train = scaler.fit_transform(x_train)
+scaled_test = scaler.transform(x_test)
+model = sm.Logit(y_train, scaled_train).fit()
+params = model.params
+conf = model.conf_int()
+conf['Odds Ratio'] = params
+conf.columns = ['2.5%', '97.5%', 'Odds Ratio']
+# convert log odds to ORs
+odds = pd.DataFrame(np.exp(conf))
+# check if pvalues are significant
+odds['pvalues'] = model.pvalues
+odds['significant?'] = ['significant' if pval <= 0.05 else 'not significant' for pval in model.pvalues]
+odds
+
+
 
 
 
@@ -339,9 +457,9 @@ rf = RandomForestClassifier(n_estimators=40, max_depth=7,max_features=3,min_samp
 rf_pred = rf.predict(x_test_rf)
 
 
-rf_accuracy_train= rf.score(x_train_rf, y_train_rf)
-rf_accuracy = rf.score(x_test_rf, y_test_rf)
-print('Random forest accuracy:', rf_accuracy)
+# rf_accuracy_train= rf.score(x_train_rf, y_train_rf)
+# rf_accuracy = rf.score(x_test_rf, y_test_rf)
+# print('Random forest accuracy:', rf_accuracy)
 
 rf_cm = metrics.confusion_matrix(y_test_rf, rf_pred)
 
@@ -407,16 +525,6 @@ for t in rf.estimators_[:9]:
     plot_tree(t, filled=True, ax=ax)
 plt.show()
         
-def evaluate(model, test_features, test_labels):
-    predictions = model.predict(test_features)
-    errors = abs(predictions - test_labels)
-    mape = 100 * np.mean(errors / test_labels)
-    accuracy = 100 - mape
-    print('Model Performance')
-    print('Average Error: {:0.4f} degrees.'.format(np.mean(errors)))
-    print('Accuracy = {:0.2f}%.'.format(accuracy))
-    
-    return accuracy
 
 
 imp= permutation_importance(rf, x_test_rf, y_test_rf)
@@ -429,5 +537,17 @@ ax.set_ylabel("Mean accuracy decrease")
 fig.tight_layout()
 plt.show()
 
+# tree_importances = []
+# for tree in rf.estimators_:
+#     importances = tree.tree_.compute_feature_importances(normalize=False)
+#     tree_importances.append(importances)
 
+# # Compute the mean importance scores across all trees
+# mean_importances = np.mean(tree_importances, axis=0)
 
+# # Sort the features by importance score
+# sorted_indices = mean_importances
+
+# # Print the top 5 most important trees
+# for i in range(5):
+#     print(f"Tree {i+1}: Importance score = {mean_importances[sorted_indices[i]]:.2f}")
