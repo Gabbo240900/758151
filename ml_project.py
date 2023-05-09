@@ -5,10 +5,7 @@ Created on Wed Apr 19 13:54:32 2023
 @author: frank
 """
 
-from imblearn.metrics import specificity_score
-from sklearn.inspection import permutation_importance
 import tensorflow as tf
-from tensorflow import keras
 from tensorflow.keras import layers
 import pandas as pd
 from sklearn.metrics import r2_score
@@ -30,6 +27,9 @@ from IPython.display import Image
 from sklearn import tree
 from IPython import display
 import graphviz
+import keras
+from keras.models import Sequential
+from keras.layers import Dense
 from sklearn.tree import plot_tree
 
 df= pd.read_csv("C:\\Users\\frank\\Downloads\\asteroid_dataset.csv")
@@ -192,7 +192,7 @@ plt.title('Correlation between Jupiter Tisserand Invariant and Orbital Period')
 plt.show()
 print(f'The correlation between Jupiter Tisserand Invariant and Orbital Periodis {ju_corr}')
 
-.
+
 # Count the number of hazardous NEOs
 num_hazardous = df['Hazardous'].sum()
 num_hazardouss = df['Hazardous'].reset_index()
@@ -283,16 +283,15 @@ lr_df1.drop('Est Dia in KM(min)', axis=1, inplace=True)
 lr_df1.drop('Est Dia in KM(max)',axis=1, inplace=True)
 
 
-x_train_tot, x_test_tot, y_train_tot, y_test_tot = train_test_split(lr_df1, target, test_size=0.20, random_state=0)
 x_train, x_test, y_train, y_test = train_test_split(df_log_reg, response1, test_size=0.20, random_state=0)
 scaler = StandardScaler()
 
 # get the indices of the rows in lr_df1 that also appear in df_log_reg
-overlap_indices = x_test_tot.index.intersection(x_train.index)
+overlap_indices = lr_df1.index.intersection(x_train.index)
 
 # drop the overlapping rows from lr_df1
-x_test_tot = x_test_tot.drop(overlap_indices)
-y_test_tot= y_test_tot.drop(overlap_indices)
+x_test_tot = lr_df1.drop(overlap_indices)
+y_test_tot= target.drop(overlap_indices)
 
 
 scaled_train = scaler.fit_transform(x_train)
@@ -450,16 +449,13 @@ odds
 #----- Random Forest -----
 
 
-x_train_rf, x_test_rf, y_train_rf, y_test_rf = train_test_split(cor_df, target, test_size=0.20, random_state=0)
+x_train_rf, x_test_rf, y_train_rf, y_test_rf = train_test_split(lr_df1, target, test_size=0.20, random_state=0)
 
-rf = RandomForestClassifier(n_estimators=40, max_depth=7,max_features=3,min_samples_leaf=1, min_samples_split=2).fit(x_train_rf, y_train_rf)
+rf = RandomForestClassifier(n_estimators=30, max_depth=8,max_features=3,min_samples_leaf=1, min_samples_split=12).fit(x_train_rf, y_train_rf)
 
 rf_pred = rf.predict(x_test_rf)
 
 
-# rf_accuracy_train= rf.score(x_train_rf, y_train_rf)
-# rf_accuracy = rf.score(x_test_rf, y_test_rf)
-# print('Random forest accuracy:', rf_accuracy)
 
 rf_cm = metrics.confusion_matrix(y_test_rf, rf_pred)
 
@@ -471,6 +467,10 @@ sns.heatmap(rf_cm, annot=True, annot_kws={'size':15},
 
 plt.title('Confusion Matrix for Random Forest Model')
 plt.show()
+
+
+rf_accuracy =accuracy_score(y_test_rf, rf_pred)
+print('Random forest accuracy:', rf_accuracy)
 
 precision_rf= precision_score(y_test_rf, rf_pred)
 print('Random forest precision:', precision_rf)
@@ -520,7 +520,7 @@ print(grid_search.best_params_)
 
 
   
-for t in rf.estimators_[:9]:
+for t in rf.estimators_[:5]:
     fig, ax = plt.subplots(figsize=(10, 10),dpi=300)
     plot_tree(t, filled=True, ax=ax)
 plt.show()
@@ -551,3 +551,48 @@ plt.show()
 # # Print the top 5 most important trees
 # for i in range(5):
 #     print(f"Tree {i+1}: Importance score = {mean_importances[sorted_indices[i]]:.2f}")
+
+#----- Neural network -----
+
+# Initialising the ANN
+classifier = Sequential()
+
+# Adding the input layer and the first hidden layer
+classifier.add(Dense(24, kernel_initializer = 'uniform', activation = 'relu'))
+
+# Adding the second hidden layer
+classifier.add(Dense(12, kernel_initializer = 'uniform', activation = 'relu'))
+
+# Adding the third hidden layer
+classifier.add(Dense(12, kernel_initializer = 'uniform', activation = 'relu'))
+
+# Adding the fourth hidden layer
+#[classifier.add(Dense(12, kernel_initializer = 'uniform', activation = 'relu'))
+
+# Adding the fifth hidden layer
+classifier.add(Dense(12, kernel_initializer = 'uniform', activation = 'relu'))
+
+# Adding the output layer
+classifier.add(Dense(1, kernel_initializer = 'uniform', activation = 'sigmoid'))
+
+# Compiling the ANN
+classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy','Recall'])
+
+# Fitting the ANN to the Training set
+classifier.fit(x_train_rf, y_train_rf, batch_size = 15, epochs = 300)
+
+# Part 3 - Making the predictions and evaluating the model
+
+# Predicting the Test set results
+y_pred = classifier.predict(x_test_rf)
+y_pred = (y_pred > 0.5)
+
+# Making the Confusion Matrix
+from sklearn.metrics import confusion_matrix
+cm = confusion_matrix(y_test_rf, y_pred)
+
+# Computing Accuracy, Precision and Recall
+from sklearn.metrics import accuracy_score, precision_score, recall_score
+print("Accuracy =", accuracy_score(y_test_rf,y_pred))
+print("Precision = ", precision_score(y_test_rf,y_pred))
+print("Recall = ", recall_score(y_test_rf,y_pred))
