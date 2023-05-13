@@ -19,7 +19,7 @@ The logistic regression, as expected, performs amazingly well on the balanced da
 
 
 <ol>
-<li*>Logistic regression precision (balanced): 0.9517241379310345<*/li>
+<li><i>Logistic regression precision (balanced): 0.9517241379310345 <i></li>
 <li>*Logistic regression specificity (balanced): 0.9565217391304348*</li>
 <li>*Logistic regression accuracy (balanced): 0.9668874172185431*</li>
 <li>*Logistic regression recall (balanced): 0.9787234042553191*</li>
