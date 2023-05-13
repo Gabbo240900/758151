@@ -17,7 +17,6 @@ The logistic regression, as expected, performs amazingly well on the balanced da
 
 ![download](https://github.com/Gabbo240900/758151/assets/127876439/8880a32f-ce82-4817-b8d2-9cd74a6b98e7)
 
-
 <ol>
 <li>Logistic regression precision (balanced): 0.9517241379310345 </li>
 <li>Logistic regression specificity (balanced): 0.9565217391304348</li>
@@ -25,38 +24,45 @@ The logistic regression, as expected, performs amazingly well on the balanced da
 <li>Logistic regression recall (balanced): 0.9787234042553191</li>
 <li>Logistic regression F-1 score (balanced): 0.965034965034965</li>
 </ol>
+
+
 On the other hand, the same algorithm generates very different results on the real dataset consequently, we chose this model, performed on unbalanced data, as the low benchmark (the model that must necessarily be overcome in order to have an acceptable model).
- 
-Logistic regression precision (unbalanced): 0.2363013698630137
-Logistic regression specificity (unbalanced): 0.8663870581186339
-Logistic regression accuracy (unbalanced): 0.870939925265881
-Logistic regression recall (unbalanced): 0.9787234042553191
-Logistic regression F-1 score (unbalanced): 0.3806896551724137
 
+![download](https://github.com/Gabbo240900/758151/assets/127876439/ac365fb5-5d0d-400d-9822-6f49584fc154)
 
-
-
-
-
+<ol> 
+<li>Logistic regression precision (unbalanced): 0.2363013698630137</li>
+<li>Logistic regression specificity (unbalanced): 0.8663870581186339</li>
+<li>Logistic regression accuracy (unbalanced): 0.870939925265881</li>
+<li>Logistic regression recall (unbalanced): 0.9787234042553191</li>
+<li>Logistic regression F-1 score (unbalanced): 0.3806896551724137</li>
+</ol>
 
 
 The Random forest, as expected, performed extremely well with a really a few missclassificated objects
  
+![download](https://github.com/Gabbo240900/758151/assets/127876439/dd7cd064-477c-425a-b7df-86e6666cea23)
 
-Random forest accuracy: 0.9946695095948828
-Random forest precision: 0.9869281045751634
-Random forest recall: 0.9805194805194806
-Random forest F-1 score: 0.9837133550488599
-Random forest specificity: 0.9974489795918368
+<ol> 
+<li>Random forest accuracy: 0.9946695095948828</li>
+<li>Random forest precision: 0.9869281045751634</li>
+<li>Random forest recall: 0.9805194805194806</li>
+<li>Random forest F-1 score: 0.9837133550488599</li>
+<li>Random forest specificity: 0.9974489795918368</li>
+</ol> 
+
 
 The A.N.N. also performed well even if it is less accurate then the previous model
- 
-Ann accuracy: 0.9872068230277186
-Ann precision: 0.9671052631578947
-Ann recall: 0.9545454545454546
-Ann F-1 score: 0.9607843137254902
-Ann specificity: 0.9936224489795918+9
 
+![download](https://github.com/Gabbo240900/758151/assets/127876439/5cb7b443-b001-4f33-954e-cf34792dfd03)
+
+<ol> 
+<li>Ann accuracy: 0.9872068230277186</li>
+<li>Ann precision: 0.9671052631578947</li>
+<li>Ann recall: 0.9545454545454546</li>
+<li>Ann F-1 score: 0.9607843137254902</li>
+<li>Ann specificity: 0.9936224489795918+9</li>
+</ol>
 ### Conclusions
 
 
