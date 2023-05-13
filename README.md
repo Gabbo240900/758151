@@ -15,6 +15,8 @@ Te project aims at analyzing the dataset to gain insigths on the differnt asteor
 In this section, we are going to analyze the results of our research.
 The logistic regression, as expected, performs amazingly well on the balanced dataset. For this reason, we chose this model as the high benchmark (the model to beat to have a satisfactory model).
 
+![download](https://github.com/Gabbo240900/758151/assets/127876439/8880a32f-ce82-4817-b8d2-9cd74a6b98e7)
+
 
 Logistic regression precision (balanced): 0.9517241379310345
 Logistic regression specificity (balanced): 0.9565217391304348
