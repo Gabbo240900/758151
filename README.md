@@ -63,6 +63,7 @@ The A.N.N. also performed well even if it is less accurate then the previous mod
 <li>Ann F-1 score: 0.9607843137254902</li>
 <li>Ann specificity: 0.9936224489795918+9</li>
 </ol>
+
 ### Conclusions
 
 
