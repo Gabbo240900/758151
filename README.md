@@ -18,13 +18,12 @@ The logistic regression, as expected, performs amazingly well on the balanced da
 ![download](https://github.com/Gabbo240900/758151/assets/127876439/8880a32f-ce82-4817-b8d2-9cd74a6b98e7)
 
 
-(*
--Logistic regression precision (balanced): 0.9517241379310345
--Logistic regression specificity (balanced): 0.9565217391304348
--Logistic regression accuracy (balanced): 0.9668874172185431
--Logistic regression recall (balanced): 0.9787234042553191
--Logistic regression F-1 score (balanced): 0.965034965034965
-*)
+
+-*Logistic regression precision (balanced): 0.9517241379310345
+-*Logistic regression specificity (balanced): 0.9565217391304348
+-*Logistic regression accuracy (balanced): 0.9668874172185431
+-*Logistic regression recall (balanced): 0.9787234042553191
+-*Logistic regression F-1 score (balanced): 0.965034965034965
 
 On the other hand, the same algorithm generates very different results on the real dataset consequently, we chose this model, performed on unbalanced data, as the low benchmark (the model that must necessarily be overcome in order to have an acceptable model).
  
