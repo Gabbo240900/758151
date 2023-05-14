@@ -15,7 +15,7 @@ Te project aims at analyzing the dataset to gain insigths on the differnt asteor
 In this section, we are going to analyze the results of our research.
 The logistic regression, as expected, performs amazingly well on the balanced dataset. For this reason, we chose this model as the high benchmark (the model to beat to have a satisfactory model).
 
-![download](https://github.com/Gabbo240900/758151/assets/127876439/8880a32f-ce82-4817-b8d2-9cd74a6b98e7)
+![download](https://github.com/Gabbo240900/758151/assets/127876439/aae01376-8960-45ea-b956-0194b650727b)
 
 <ol>
 <li>Logistic regression precision (balanced): 0.9517241379310345 </li>
@@ -28,7 +28,7 @@ The logistic regression, as expected, performs amazingly well on the balanced da
 
 On the other hand, the same algorithm generates very different results on the real dataset consequently, we chose this model, performed on unbalanced data, as the low benchmark (the model that must necessarily be overcome in order to have an acceptable model).
 
-![download](https://github.com/Gabbo240900/758151/assets/127876439/ac365fb5-5d0d-400d-9822-6f49584fc154)
+![download](https://github.com/Gabbo240900/758151/assets/127876439/e602aea3-6094-44b5-849a-14fed4ab95ea)
 
 <ol> 
 <li>Logistic regression precision (unbalanced): 0.2363013698630137</li>
@@ -41,7 +41,7 @@ On the other hand, the same algorithm generates very different results on the re
 
 The Random forest, as expected, performed extremely well with a really a few missclassificated objects
  
-![download](https://github.com/Gabbo240900/758151/assets/127876439/dd7cd064-477c-425a-b7df-86e6666cea23)
+![download](https://github.com/Gabbo240900/758151/assets/127876439/aa888b7b-c732-4de5-ba93-5791078dca3c)
 
 <ol> 
 <li>Random forest accuracy: 0.9946695095948828</li>
@@ -54,7 +54,7 @@ The Random forest, as expected, performed extremely well with a really a few mis
 
 The A.N.N. also performed well even if it is less accurate then the previous model
 
-![download](https://github.com/Gabbo240900/758151/assets/127876439/5cb7b443-b001-4f33-954e-cf34792dfd03)
+![download](https://github.com/Gabbo240900/758151/assets/127876439/e5bf84e5-1b42-4629-842e-b38a9efc4876)
 
 <ol> 
 <li>Ann accuracy: 0.9872068230277186</li>
