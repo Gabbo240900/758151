@@ -9,7 +9,7 @@ Te project aims at analyzing the dataset to gain insigths on the differnt asteor
 
 ### Methods
 
-![image](https://github.com/Gabbo240900/758151/assets/127833047/0cd16155-6ca9-4c92-8b98-726f32f87e50)
+![image](https://github.com/Gabbo240900/758151/assets/127833047/325e732a-215a-4502-a84c-7cfffe17f8d4)
 
 For the other correlation images refer to: https://github.com/Gabbo240900/758151/tree/main/images/Correlations
 
