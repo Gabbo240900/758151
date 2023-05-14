@@ -9,11 +9,40 @@ Te project aims at analyzing the dataset to gain insigths on the differnt asteor
 
 ### Methods
 
+![FlowChart](https://github.com/Gabbo240900/758151/assets/127876439/bbf4a01b-36fe-4cdc-a580-ebe635af766f)
+
+All of our work has been done on Google Colab, to avoid any problem with the environment such as conflicting libraries. In order to achieve our classification task we took into account three models, the first (Logistic Regression) serving as a benchmark for the other two(Random Forest and A.N.N.). 
+We started by importing all the needed libreries for the whole project.  Then we looked for NAs and duplicates, the dataset presented 0 repeted rows and 0 null values; it must be said that in the dataset the same NEO has benn recorded more than once,  this is due to a posterior observation of the object, so this is not a bias augmenting factor. Lastly in this section we dealed with variables, we deleted all the columns containing dates,since they are not useful to our task, and containing the imperial unit of measure. We converted all the variables related to distances to AU (astronomical units, the mean distance from Earth to Sun).  We decided to use this unit of measure instead of creating our scale for two main reasons: the first is that AU is a world recognised unit of measure so that everyone can understand it instantly without our further explanation, the latter is that some of us had troubles on working with huge numbers on some editors, this is another reason why chose to use Colab as standard for all the members.
+The second stage is the exploratory data analysis.
+
+
+We started by displaing all the coreelations among variables in a table, then we analized the onse that according to us are the most interasting.
+
 ![image](https://github.com/Gabbo240900/758151/assets/127833047/325e732a-215a-4502-a84c-7cfffe17f8d4)
+
+1.	Size vs Speed, this correlation was required by the instruction and the really low correlation was predictable since the speed of an object is not influenced by its size in the void.
+2.	Distances, we highlighted the correlations between the three distance features, to use only one out of three, since they all express almost the same information
+3.	Size vs Brightness,  as we can see there is a not so strong negative correlation, which is unexpected because logically, the bigger an object is, the more it will be able to shine, but this trivial assertion, as shown by the data, has no confirmation because there are many factors that determine the brightness of an object in space, first of all, for example, the material of which the observed object is made.
+4.	Size vs Speed of the object in its orbit, we wanted to investigate this correlation further to corroborate the fact that velocity does not depend on size, which is therefore not a good indicator for mass.
+5.	The relationship to Jupiter's orbit vs Orbital period, the more the object has a strong relationship with the orbit of Jupiter the less its orbital period lasts, this could be misleading because we could trivially think that objects with a high relationship with the orbit of Jupiter and a short orbital period are close to the planet , when it is not said since the orbital period depends on other factors such as for example the speed of the object, which cannot be deduced from these data, and the length of its orbit.
+6.	 The relationship to Jupiter's orbit vs Orbital speed, this correlation  the most interesting in our opinion, shows how the more an object has a strong relationship with Jupiter, the faster it is in its orbit, this may be due to the effect of gravity assist. Furthermore, this correlation allows us to improve the considerations on the previous one by adding that objects close to Jupiter actually travel their orbit faster
+7.	The farthest distance between the NEO and the Sun vs The distance from the center of the NEO's orbit to its farthest point, the strong correlation is not surprising given that the sun contains 99.86% of the total mass of the solar system. in fact it is normal to believe that the furthest point of the orbit corresponds to the furthest point from the sun, because almost all objects are kept in orbit by the sun which obviously resides within it.
+8.	The relationship to Jupiter's orbit vs the distance from the center of the NEO's orbit to its farthest point, this negative correlation suggests that a strong relationship with Jupiter corresponds to a shorter orbit. therefore this correlation is the missing piece to make us conclude that all those objects that have a short orbital period, a high orbital speed and a relatively short orbit orbit around Jupiter
 
 For the other correlation images refer to: https://github.com/Gabbo240900/758151/tree/main/images/Correlations
 
-![FlowChart](https://github.com/Gabbo240900/758151/assets/127876439/bbf4a01b-36fe-4cdc-a580-ebe635af766f)
+After the correlations we focused on the distributions of the variables and as the plot shows non of the it’s close to a Gaussian distribution.  As for the outliers, the plot  shows  their presence in some variables, but given that in this specific case our classification task can be associated with an anomaly detection task, it is much more appropriate to keep them. The last exploratory analysis is to evaluate the balance of the data and as the barplot below states the hazardous NEOs are the 16.11% of the total observations.
+
+
+In order to build the first model a resampling is required since logistic regression is known to be a bad model for such unbalanced datasets.
+to balance the data we opted for an undersampling, performed through a clustering. first we ran a db scan clustering algorithm and then we took at least one observation from each cluster in order to equalize the two values of the target class, this dataset has 1510 observations.
+We trained the LR on this dataset and then tested it both on this dataset and on the unbalanced dataset (without the observations used in the train, to avoid bias). In order to identify the most important parameters we ran another LR using a different library.  
+
+
+For the random forest we used the same dataset feeded to the LR in the second case, so that the comparison can be even more effective. we ran the Random Forest the first time with random parameters which we then changed via a grid search, then we decided to visualize some trees in order to understand the algorithm's decision scheme and finally we focused on determining which features were the most significant
+
+As for our latest model, the A.N.N. we scaled the same inputs of the Random Forest and then we proceeded with the testing of the parameters, in the code there is the version with the parameters that maximize the performance of the model. we finally decided to plot the loss function to identify any conceptual errors.
+
 
 ### Experimental Design
 
