@@ -13,6 +13,18 @@ Te project aims at analyzing the dataset to gain insigths on the differnt asteor
 
 ### Experimental Design
 
+In this section of the report, we will describe our main experiments conducted during the realization of the project.
+Starting with the Exploratory data analysis the main experiments regarded the choice of the variables. In this phase, we needed to choose which variables had to be removed from our dataset to conduct a more correct classification. The main idea behind the choice of variable removal resides in the correlation with the others and how they were expressed. We decided after looking at the correlation matrix, and distributions to remove some that were highly correlated with one another or useless since repetitive in the dataset. Others were kept based on further performance metrics of the classification models.
+In the Machine Learning phase, there were many experiments conducted mainly on the hyperparameter tuning phase. 
+Starting with the logistic regression, the main experiment regarded the choice of parameters for the DBScan algorithm for under-sampling. After many tries and keeping in mind that we wanted a perfectly balanced dataset, we chose the parameters that you can find in the .ipynb. 
+Moreover, we chose to use an under-sampling strategy rather than oversampling after talking with the course's Teaching Assistant, following his advice. 
+In the Random Forest stage, the main experiments regarded again the choice of the hyperparameters. They are fundamental for the performance of the model thus to choose them we based ourselves on two things. First, we only looked at the metrics (F1, AUC…) and tried to change them manually, then we also run a Grid Search so to have a perfect understanding of which parameters fitted the best with our dataset. 
+In the ANN scenario again tuning the hyperparameters (loss-function, number of layers, epochs, optimizer …) was the key aspect of our experiments. We chose them again based mainly on the performance of the model on our dataset. 
+After conducting all the ML techniques, we wanted to make our models perform better and thus we tried t remove some variables that were not significant for the classification, basing ourselves on the results from the Logistic Regression and Random Forset. 
+We decided at the end to keep all of them mainly for performance reasons since removing them reduced the performance both on training and testing of all the models. 
+
+
+
 ### Results
 In this section, we are going to analyze the results of our research.
 The logistic regression, as expected, performs amazingly well on the balanced dataset. For this reason, we chose this model as the high benchmark (the model to beat to have a satisfactory model).
