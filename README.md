@@ -125,10 +125,15 @@ for the other three algorithms the figure is not clear and for this reason, the 
 
 As we can see both A.N.N. and Random Forest are very close to our high benchmark, but only the latter exceeds it in all the considered metrics. This is one of the reasons for considering the random forest the best of the models. In addition to having performed better than the A.N.N., the Random Forest is a simpler and faster model; therefore in our opinion it would have been the better model of the two for equal results. As far as logistic regression is concerned, we have been able to see how clearly it cannot be considered a good model in an unbalanced dataset.
 
+Using the Random forest which is the best model we decided to investigate which NEOs are hazardous and why. 
+To do this we compared the test set for NEOs classified as hazardous and not and we compared their distributions using boxplots. 
+In such a way we are able to determine which features we should look for to understand if a NEOs is hazardous or not.
 
+![download](https://github.com/Gabbo240900/758151/assets/127876439/998d2b6d-e1bc-4128-8ccd-6b798daf202f)
 
+![download](https://github.com/Gabbo240900/758151/assets/127876439/dce264ca-6c48-4f2e-8be0-7f72a8109886)
 
-
-
+There are some features that change their distribution, they are: Absolute magnitude, Orbit uncentainity, Minimum orbit intersection, Eccentricity, Perihelion distance and Mean anomaly and Est. dia in km. 
+Considering a new object that has unusual values in all of those variables should be considered possibly hazardous and should be further investigated.
 
 
