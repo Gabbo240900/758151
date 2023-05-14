@@ -69,11 +69,11 @@ The A.N.N. also performed well even if it is less accurate then the previous mod
 
 In conclusion, as we can see from the graph below, Logistic Regression is the worst algorithm that can be applied in a real dataset.
 
-![download](https://github.com/Gabbo240900/758151/assets/127876439/a5bf25e1-92a0-4f71-81d9-2de55155185a)
+![download](https://github.com/Gabbo240900/758151/assets/127876439/24d22e10-140e-412f-ac84-9f592998cad9)
 
 for the other three algorithms the figure is not clear and for this reason, the graph below, a zoom of the previous one, aims to better represent the differences between the models
 
-![download](https://github.com/Gabbo240900/758151/assets/127876439/0cae1703-1486-44c8-88e6-29d9c6538710)
+![download](https://github.com/Gabbo240900/758151/assets/127876439/41871c6a-bb71-43cd-bc16-3225065c182b)
 
 As we can see both A.N.N. and Random Forest are very close to our high benchmark, but only the latter exceeds it in all the considered metrics. This is one of the reasons for considering the random forest the best of the models. In addition to having performed better than the A.N.N., the Random Forest is a simpler and faster model; therefore in our opinion it would have been the better model of the two for equal results. As far as logistic regression is concerned, we have been able to see how clearly it cannot be considered a good model in an unbalanced dataset.
 
