@@ -137,3 +137,7 @@ There are some features that change their distribution, they are: Absolute magni
 Considering a new object that has unusual values in all of those variables should be considered possibly hazardous and should be further investigated.
 
 
+### Extra
+
+This section is dedicated to how this project could have been developed with more information. We believe that with more observations and other important variables such as mass and the type of the object, the models would have been more accurate (especially the A.N.N.). 
+
