@@ -45,6 +45,7 @@ As for our latest model, the A.N.N., we scaled the same inputs of the Random For
 We finally decided to plot the loss function to identify any conceptual errors.
 
 We decided to use our most accurate model to infer about some features that could potentially indicate if a NEO is hazardous.
+For this reason we set the Random Forest treshold to 0.4 in order to have more false positives than false negatives because in this case we prefer to capture false positives given the importance of the event.
 
 ### Experimental Design
 
@@ -138,7 +139,7 @@ In such a way we are able to determine which features we should look for to unde
 
 There are some features that change their distribution, they are: Absolute magnitude, Orbit uncentainity, Minimum orbit intersection, Eccentricity, Perihelion distance and Mean anomaly and Est. dia in km. 
 Considering a new object that has unusual values in all of those variables should be considered possibly hazardous and should be further investigated.
-
+it is also important to specify that many objects enter the earth's atmosphere every year but this does not mean they must be classified as dangerous, many of them do not touch the ground.
 
 ### Extra
 
