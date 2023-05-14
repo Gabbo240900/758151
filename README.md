@@ -1,4 +1,4 @@
-# Asteorid Classification 
+# NEO Classification 
 ## Will it impact the Earth ?
 
 Team Members: Gabriele Di Palma, Francesco Di Stefano, Francesco Tramontano 
