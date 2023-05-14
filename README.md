@@ -1,4 +1,4 @@
-# Asteorid Classification 
+# NEO Classification 
 ## Will it impact the Earth ?
 
 Team Members: Gabriele Di Palma, Francesco Di Stefano, Francesco Tramontano 
@@ -8,6 +8,10 @@ In this project the team had to face a classification task. We were given a data
 Te project aims at analyzing the dataset to gain insigths on the differnt asteorids near the earth. This analysis was used to identify different patterns that could be used to detect potentially hazardouse asteroids impacts. 
 
 ### Methods
+
+![image](https://github.com/Gabbo240900/758151/assets/127833047/0cd16155-6ca9-4c92-8b98-726f32f87e50)
+
+For the other correlation images refer to: https://github.com/Gabbo240900/758151/tree/main/images/Correlations
 
 ![FlowChart](https://github.com/Gabbo240900/758151/assets/127876439/bbf4a01b-36fe-4cdc-a580-ebe635af766f)
 
