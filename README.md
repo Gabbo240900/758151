@@ -9,6 +9,9 @@ Te project aims at analyzing the dataset to gain insigths on the differnt asteor
 
 ### Methods
 
+
+For the other correlation images refer to: https://github.com/Gabbo240900/758151/tree/main/images/Correlations
+
 ![FlowChart](https://github.com/Gabbo240900/758151/assets/127876439/bbf4a01b-36fe-4cdc-a580-ebe635af766f)
 
 ### Experimental Design
