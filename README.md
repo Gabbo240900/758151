@@ -44,6 +44,7 @@ For the random forest we used the unbalanced dataset, so that the comparison can
 As for our latest model, the A.N.N., we scaled the same inputs of the Random Forest and then we proceeded with the testing of the parameters, in the code there is the version with the parameters that maximize the performance of the model.
 We finally decided to plot the loss function to identify any conceptual errors.
 
+We decided to use our most accurate model to infer about some features that could potentially indicate if a NEO is hazardous.
 
 ### Experimental Design
 
