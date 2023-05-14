@@ -129,8 +129,10 @@ Using the Random forest which is the best model we decided to investigate which 
 To do this we compared the test set for NEOs classified as hazardous and not and we compared their distributions using boxplots. 
 In such a way we are able to determine which features we should look for to understand if a NEOs is hazardous or not.
 
+*Hazardous objects*
 ![download](https://github.com/Gabbo240900/758151/assets/127876439/998d2b6d-e1bc-4128-8ccd-6b798daf202f)
 
+*Non hazardous objects*
 ![download](https://github.com/Gabbo240900/758151/assets/127876439/dce264ca-6c48-4f2e-8be0-7f72a8109886)
 
 There are some features that change their distribution, they are: Absolute magnitude, Orbit uncentainity, Minimum orbit intersection, Eccentricity, Perihelion distance and Mean anomaly and Est. dia in km. 
