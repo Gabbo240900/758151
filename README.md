@@ -12,9 +12,13 @@ The project aims at analyzing the dataset to gain insigths on the differnt asteo
 <img width="1206" alt="image" src="https://github.com/Gabbo240900/758151/assets/127876439/5fc4f81e-1d29-430a-adaf-06cc63fc2744">
 
 
-All of our work has been done on Google Colab, to avoid any problem with the environment such as conflicting libraries. In order to achieve our classification task we took into account three models, the first (Logistic Regression) serving as a benchmark for the other two(Random Forest and A.N.N.). 
-We started by importing all the needed libreries for the whole project.  Then we looked for NAs and duplicates, the dataset presented 0 repeted rows and 0 null values; it must be said that in the dataset there are some NEOs that have benn recorded more than once,  this is due to a posterior observation of the object, so this is not a bias augmenting factor. Lastly in the EDA section we dealed with variables, we deleted all the columns containing dates,since they are not useful to our task, and all those that contained the imperial unit of measures. We converted all the variables related to distances to AU (astronomical units, the mean distance from Earth to Sun).  We decided to use this unit of measure instead of creating our scale for two main reasons: the first is that AU is a world recognised unit of measure so that everyone can understand it instantaneously without any further explanation, moreover, we encountered troubles  working with huge numbers on some editors, this is another reason why chose to use Colab as standard for all the members.
-The second stage is the exploratory data analysis.
+Our entire project was conducted on Google Colab to ensure a consistent and problem-free environment, avoiding any issues related to conflicting libraries. To accomplish our classification task, we considered three models, with Logistic Regression serving as a benchmark for the other two models, namely Random Forest and Artificial Neural Network (A.N.N.).
+
+The initial step involved importing all the necessary libraries for the project. Next, we examined the dataset for missing values (NAs) and duplicates. Fortunately, we found no repeated rows or null values. It's worth noting that some Near-Earth Objects (NEOs) appeared multiple times in the dataset due to subsequent observations, which doesn't introduce any bias.
+
+In the exploratory data analysis (EDA) section, we focused on handling the variables. We removed columns containing dates since they weren't relevant to our task. Additionally, we excluded columns that represented measurements in imperial units of measure. To make the distances consistent, we converted all distance-related variables to Astronomical Units (AU), which represent the mean distance between the Earth and the Sun. This choice of unit has two main advantages: first, AU is a globally recognized unit of measure, easily understood without further explanation; second, working with large numbers posed difficulties in some editors, which further motivated our decision to use Colab as the standard environment for all team members.
+
+The second stage of our project involved conducting the exploratory data analysis (EDA).
 
 
 We started by displaing all the coreelations among variables in a table, then we analized the onse that according to us are the most interasting.
@@ -51,7 +55,7 @@ For this reason we set the Random Forest treshold to 0.4 in order to have more f
 ### Experimental Design
 
 In this section of the report, we will describe our main experiments conducted during the realization of the project.
-Starting with the Exploratory data analysis the main experiments regarded the choice of the variables. In this phase, we needed to choose which variables had to be removed from our dataset to conduct a more correct classification. The main idea behind the choice of variable removal resides in the correlation with the others and how they were expressed. We decided after looking at the correlation matrix, and distributions to remove some that were highly correlated with one another or useless since repetitive in the dataset. Others were kept based on further performance metrics of the classification models.
+Starting with the Exploratory data analysis the main experiments regarded the choice of the variables. In this phase, we needed to choose which variables had to be removed from our dataset to conduct a more correct classification. The main idea behind the choice of variable removal resides in the correlation with the others and how they were expressed. We decided after looking at the correlation matrix, and distributions to remove some that were highly correlated with one another or useless since repetitive in the dataset. Others were kept based on further performance metrics of the classification models. We also tested our models with a dataset with no correlated columns, however we preferred to continue with the original dataset because: both Random Forest and A.N.N. does not suffer from multicollinearity problems, and because we have had better performances.
 In the Machine Learning phase, there were many experiments conducted mainly on the hyperparameter tuning phase. 
 Starting with the logistic regression, the main experiment regarded the choice of parameters for the DBScan algorithm for under-sampling. After many tries and keeping in mind that we wanted a perfectly balanced dataset, we chose the parameters that you can find in the .ipynb. 
 Moreover, we chose to use an under-sampling strategy rather than oversampling after talking with the course's Teaching Assistant, following his advice. 
@@ -122,7 +126,7 @@ In conclusion, as we can see from the graph below, Logistic Regression is the wo
 
 ![download](https://github.com/Gabbo240900/758151/assets/127876439/24d22e10-140e-412f-ac84-9f592998cad9)
 
-for the other three algorithms the figure is not clear and for this reason, the graph below, a zoom of the previous one, aims to better represent the differences between the models
+For the other three algorithms the figure is not clear and for this reason, the graph below, a zoom of the previous one, aims to better represent the differences between the models
 
 ![download](https://github.com/Gabbo240900/758151/assets/127876439/41871c6a-bb71-43cd-bc16-3225065c182b)
 
