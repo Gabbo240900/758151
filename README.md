@@ -9,7 +9,8 @@ The project aims at analyzing the dataset to gain insigths on the differnt asteo
 
 ### Methods
 
-![FlowChart](https://github.com/Gabbo240900/758151/assets/127876439/bbf4a01b-36fe-4cdc-a580-ebe635af766f)
+<img width="2621" alt="image" src="https://github.com/Gabbo240900/758151/assets/127876439/ed371e62-5fc7-4633-adda-9d72dd9c7ba2">
+
 
 All of our work has been done on Google Colab, to avoid any problem with the environment such as conflicting libraries. In order to achieve our classification task we took into account three models, the first (Logistic Regression) serving as a benchmark for the other two(Random Forest and A.N.N.). 
 We started by importing all the needed libreries for the whole project.  Then we looked for NAs and duplicates, the dataset presented 0 repeted rows and 0 null values; it must be said that in the dataset there are some NEOs that have benn recorded more than once,  this is due to a posterior observation of the object, so this is not a bias augmenting factor. Lastly in the EDA section we dealed with variables, we deleted all the columns containing dates,since they are not useful to our task, and all those that contained the imperial unit of measures. We converted all the variables related to distances to AU (astronomical units, the mean distance from Earth to Sun).  We decided to use this unit of measure instead of creating our scale for two main reasons: the first is that AU is a world recognised unit of measure so that everyone can understand it instantaneously without any further explanation, moreover, we encountered troubles  working with huge numbers on some editors, this is another reason why chose to use Colab as standard for all the members.
