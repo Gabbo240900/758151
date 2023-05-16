@@ -9,7 +9,7 @@ The project aims at analyzing the dataset to gain insigths on the differnt asteo
 
 ### Methods
 
-![download](https://github.com/Gabbo240900/758151/assets/127876439/ed371e62-5fc7-4633-adda-9d72dd9c7ba2)
+<img width="1206" alt="image" src="https://github.com/Gabbo240900/758151/assets/127876439/5fc4f81e-1d29-430a-adaf-06cc63fc2744">
 
 
 All of our work has been done on Google Colab, to avoid any problem with the environment such as conflicting libraries. In order to achieve our classification task we took into account three models, the first (Logistic Regression) serving as a benchmark for the other two(Random Forest and A.N.N.). 
